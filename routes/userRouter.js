@@ -14,7 +14,7 @@ const {
 const router = express.Router();
 
 //edit/update a User by id
-router.patch('/', updateUser);
+router.patch('/change', updateUser);
 
 //get the user's messages
 router.get('/messages', getUserMessages);
