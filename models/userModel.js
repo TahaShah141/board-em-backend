@@ -31,10 +31,10 @@ const UserSchema = new Schema({
 //signup method for users
 UserSchema.statics.signup = async function(username, email, password) {
 
-    let { username, email, password } = await validateAndEncrypt(username, email, password)
+    let { Username, Email, Password } = await validateAndEncrypt(username, email, password)
 
     //creates a new user with encrypted password
-    const user = await this.create({username, email, password});
+    const user = await this.create({username: Username, email: Email, password: Password});
 
     //signs up
     return user;
