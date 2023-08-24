@@ -1,9 +1,9 @@
 const bcrypt = require('bcrypt');
 const validator = require('validator');
 
-const User = require('../models/userModel')
-
-const validateAndEncrypt = async (username, email, password, emailPresent=true) => {
+const validateAndEncrypt = async (username, email, password, User, emailPresent=true) => {
+    if (!User) User = require('../models/userModel')
+    
     //checks if all fields filled
     if ((emailPresent && !email) || !password || !username) {
         throw Error("All fields must be filled");
