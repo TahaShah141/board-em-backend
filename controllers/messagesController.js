@@ -27,6 +27,15 @@ const getAllMessages = async (req, res) => {
     res.status(200).json(allMessages);
 }
 
+const getNewMessages = async (req, res) => {
+    const { lastRequest } = req.body
+    console.log(lastRequest)
+    // const newMessages = await Message.find({})
+
+    res.status(200).json({lastRequest})
+    // res.status(200).json(newMessages)
+}
+
 
 //get a message by id
 const getMessage = async (req, res) => {
@@ -86,6 +95,7 @@ const updateMessage = async (req, res) => {
 
 module.exports = {
     getAllMessages,
+    getNewMessages,
     getMessage,
     newMessage,
     deleteMessage, 
