@@ -71,7 +71,8 @@ const updateUser = async (req, res) => {
 
     try {
         const { username, password } = await validateAndEncrypt({...req.body}, User, false)
-        
+
+        console.log("USER ID:", userID)
         const user = await User.findByIdAndUpdate(userID, { username, password }, {new: true});
 
         if (!user) {
