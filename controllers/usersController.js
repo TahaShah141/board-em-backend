@@ -68,7 +68,7 @@ const updateUser = async (req, res) => {
     try {
         const { username, password } = await validateAndEncrypt({...req.body}, User, false)
     } catch (err) {
-        return res.status(400).json({error: err});
+        return res.status(400).json({error: err.message});
     }
 
     if (!mongoose.isValidObjectId(userID)) {
