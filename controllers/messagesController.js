@@ -28,7 +28,7 @@ const getAllMessages = async (req, res) => {
 }
 
 const getNewMessages = async (req, res) => {
-    const { lastRequest } = req.body
+    const { lastRequest } = req.headers
     const { id: userID } = req.params
 
     let newMessages
