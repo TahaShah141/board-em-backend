@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
 const validator = require('validator');
 
+const User = require('../models/userModel')
+
 const validateAndEncrypt = async (username, email, password, emailPresent=true) => {
     //checks if all fields filled
     if ((emailPresent && !email) || !password || !username) {
@@ -23,7 +25,7 @@ const validateAndEncrypt = async (username, email, password, emailPresent=true) 
     }
     
     //checks if the username already exists
-    const existsUsername = await this.findOne({ username });
+    const existsUsername = await User.findOne({ username });
     
     if (existsUsername) {
         throw Error("Username already in use");
