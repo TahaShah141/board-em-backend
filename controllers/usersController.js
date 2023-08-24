@@ -64,6 +64,9 @@ const deleteUser = async (req, res) => {
 const updateUser = async (req, res) => {
     let { id: userID } = req.params
     if (!userID) userID = req.user._id;
+
+    let { username: name } = {...req.body} 
+
     console.log('UPDATING USER', req.user.username)
 
     if (!mongoose.isValidObjectId(userID)) {
@@ -71,7 +74,7 @@ const updateUser = async (req, res) => {
     }
 
     try {
-        const { username, password } = await validateAndEncrypt({...req.body}, User, false)
+        const { username, password } = await validateAndEncrypt({...req.body}, User, (req.user.username!==name), false)
 
         console.log("USER ID:", userID)
         const user = await User.findByIdAndUpdate(userID, { username, password }, {new: true});

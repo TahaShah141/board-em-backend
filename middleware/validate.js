@@ -3,22 +3,22 @@ const validator = require('validator');
 
 const User = require('../models/userModel')
 
-const validateAndEncrypt = async ({username, email, password}, User, emailPresent=true) => {
+const validateAndEncrypt = async ({username, email, password}, User, validateUsername=true, validateEmail=true) => {
     if (!User) User = require('../models/userModel')
     
     //checks if all fields filled
-    if ((emailPresent && !email) || !password || !username) {
+    if ((validateEmail && !email) || !password || (validateUsername && !username)) {
         throw Error("All fields must be filled");
     }
 
     //checks for valid email format
-    if (emailPresent && !validator.isEmail(email)) {
+    if (validateEmail && !validator.isEmail(email)) {
         throw Error ("Please Enter a Valid Email");
     }
     
     //checks if the email already exists
 
-    if (emailPresent) {
+    if (validateEmail) {
         const existsEmail = await User.findOne({ email });
         
         if (existsEmail) {
@@ -27,10 +27,12 @@ const validateAndEncrypt = async ({username, email, password}, User, emailPresen
     }
     
     //checks if the username already exists
-    const existsUsername = await User.findOne({ username });
-    
-    if (existsUsername) {
-        throw Error("Username already in use");
+    if (validateUsername) {
+        const existsUsername = await User.findOne({ username });
+        
+        if (existsUsername) {
+            throw Error("Username already in use");
+        }
     }
     
     //checks if raw password strong enough
