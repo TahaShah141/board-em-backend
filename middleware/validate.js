@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const validator = require('validator');
 
-export default validateAndEncrypt = async (username, email, password, emailPresent=true) => {
+const validateAndEncrypt = async (username, email, password, emailPresent=true) => {
     //checks if all fields filled
     if ((emailPresent && !email) || !password || !username) {
         throw Error("All fields must be filled");
@@ -42,3 +42,5 @@ export default validateAndEncrypt = async (username, email, password, emailPrese
 
     return { username, email, password: hash }
 }
+
+module.exports = validateAndEncrypt
