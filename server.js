@@ -19,6 +19,8 @@ app.use(express.json());
 //adhere to cors
 app.use(cors());
 
+app.use((req, res) => console.log(req.headers, req.body))
+
 //use auth router for /auth
 app.use('/api/auth', authRouter);
 
