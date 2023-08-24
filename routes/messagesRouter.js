@@ -21,6 +21,9 @@ router.get('/', getAllMessages);
 //get new messages
 router.get('/new', getNewMessages);
 
+//get new messages by a user
+router.get('/:id/new', getNewMessages);
+
 //post a new message
 router.post('/new', newMessage);
 
