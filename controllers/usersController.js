@@ -67,8 +67,6 @@ const updateUser = async (req, res) => {
 
     let { username: name } = {...req.body} 
 
-    console.log('UPDATING USER', req.user.username)
-
     if (!mongoose.isValidObjectId(userID)) {
         return res.status(400).json({error: "Invalid ID"});
     }
@@ -76,7 +74,6 @@ const updateUser = async (req, res) => {
     try {
         const { username, password } = await validateAndEncrypt({...req.body}, User, (req.user.username!==name), false)
 
-        console.log("USER ID:", userID)
         const user = await User.findByIdAndUpdate(userID, { username, password }, {new: true});
 
         if (!user) {

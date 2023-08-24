@@ -7,7 +7,6 @@ const validator = require('validator');
 
 const validateAndEncrypt = require('../middleware/validate')
 
-
 //Schema for a user that posts messages
 const UserSchema = new Schema({
     username: {
@@ -39,7 +38,6 @@ UserSchema.statics.signup = async function(username, email, password) {
     //signs up
     return user;
 }
-
 
 UserSchema.statics.login = async function(credentials, password) {
     
