@@ -68,7 +68,7 @@ const updateUser = async (req, res) => {
 
     const user = User.findByIdAndUpdate(userID, {
         ...req.body
-    });
+    }, {new: true});
 
     if (!mongoose.isValidObjectId(userID)) {
         return res.status(404).json({error: "No such user exists"});
