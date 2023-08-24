@@ -17,8 +17,8 @@ const app = express();
 app.use(express.json());
 
 //adhere to cors
-// app.use(cors());
-// app.options('*', cors())
+app.use(cors());
+app.options('*', cors())
 
 //use auth router for /auth
 app.use('/api/auth', authRouter);
