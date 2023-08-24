@@ -61,7 +61,6 @@ const deleteUser = async (req, res) => {
 //update a message by id
 const updateUser = async (req, res) => {
     const { id: userID } = req.user._id;
-
     console.log('UPDATING USER', req.user.username)
 
     if (!mongoose.isValidObjectId(userID)) {
