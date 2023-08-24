@@ -14,11 +14,11 @@ const requireAuth = require('./middleware/requireAuth')
 //app object that runs the server
 const app = express();
 
-//adhere to cors
-app.use(cors());
-
 //parse incoming requests into JSON
 app.use(express.json());
+
+//adhere to cors
+app.use(cors());
 
 //use auth router for /auth
 app.use('/api/auth', authRouter);
