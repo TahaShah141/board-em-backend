@@ -10,7 +10,6 @@ const userRouter = require('./routes/userRouter');
 const authRouter = require('./routes/authRouter');
 const requireAuth = require('./middleware/requireAuth')
 
-
 //app object that runs the server
 const app = express();
 
@@ -34,7 +33,6 @@ app.use('/api/messages', messagesRouter);
 
 //use user router for /user
 app.use('/api/user', userRouter);
-
 
 //connect to db and start listening for HTTP requests
 mongoose.connect(process.env.MONGO_DB_URI)

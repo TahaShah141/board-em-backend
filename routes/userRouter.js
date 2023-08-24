@@ -28,5 +28,4 @@ router.get('/:id/messages', getUserMessages);
 //delete a user by id
 router.delete('/:id', deleteUser);
 
-
 module.exports = router
