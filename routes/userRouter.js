@@ -13,6 +13,9 @@ const {
 //initializing the router
 const router = express.Router();
 
+//edit/update a User by id
+router.patch('/', updateUser);
+
 //get the user's messages
 router.get('/messages', getUserMessages);
 
@@ -25,7 +28,5 @@ router.get('/:id/messages', getUserMessages);
 //delete a user by id
 router.delete('/:id', deleteUser);
 
-//edit/update a User by id
-router.patch('/:id', updateUser);
 
 module.exports = router
