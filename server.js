@@ -34,7 +34,7 @@ app.use('/api/user', userRouter);
 //connect to db and start listening for HTTP requests
 mongoose.connect(process.env.MONGO_DB_URI)
     .then(() => {
-        app.listen(process.env.PORT);
+        app.listen(process.env.PORT || 3000);
         console.log('connected and listening')
     })
     .catch((err) => console.log(err));
