@@ -32,8 +32,8 @@ const getNewMessages = async (req, res) => {
 
     const newMessages = await Message.find({createdAt: {$gt: lastRequest}})
 
-    res.status(200).json({lastRequest})
-    // res.status(200).json(newMessages)
+    // res.status(200).json({lastRequest})
+    res.status(200).json(newMessages)
 }
 
 
