@@ -12,7 +12,7 @@ const getUser = async (req, res) => {
         return res.status(400).json({error: "Invalid ID"});
     }
 
-    const user = User.findById(userID);
+    const user = await User.findById(userID);
 
     if (!user) {
         return res.status(404).json({error: "No such user exists"});
@@ -48,7 +48,7 @@ const deleteUser = async (req, res) => {
         return res.status(400).json({error: "Invalid ID"});
     }
 
-    const user = User.findByIdAndDelete(userID);
+    const user = await User.findByIdAndDelete(userID);
 
     if (!mongoose.isValidObjectId(userID)) {
         return res.status(404).json({error: "No such user exists"});
@@ -68,7 +68,7 @@ const updateUser = async (req, res) => {
         return res.status(400).json({error: "Invalid ID"});
     }
 
-    const user = User.findByIdAndUpdate(userID, {
+    const user = await User.findByIdAndUpdate(userID, {
         ...req.body
     }, {new: true});
 
