@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const User = require('../models/userModel');
 const Message = require('../models/messageModel')
 
+const validateAndEncrypt = require('../middleware/validate')
+
 //get a message by id
 const getUser = async (req, res) => {
     const { userID } = req.params;
@@ -63,12 +65,18 @@ const updateUser = async (req, res) => {
     const { id: userID } = req.user._id;
     console.log('UPDATING USER', req.user.username)
 
+    try {
+        const { username, password } = await validateAndEncrypt({...req.body}, User, false)
+    } catch (err) {
+        return res.status(400).json({error: err});
+    }
+
     if (!mongoose.isValidObjectId(userID)) {
         return res.status(400).json({error: "Invalid ID"});
     }
 
     const user = await User.findByIdAndUpdate(userID, {
-        ...req.body
+        username, password
     }, {new: true});
 
     if (!mongoose.isValidObjectId(userID)) {
