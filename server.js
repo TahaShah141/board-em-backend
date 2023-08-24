@@ -15,8 +15,6 @@ const app = express();
 //parse incoming requests into JSON
 app.use(express.json());
 
-app.use('/test', (req, res) => res.status(200).json("Update works now"))
-
 //use auth router for /auth
 app.use('/api/auth', authRouter);
 
