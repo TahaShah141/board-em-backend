@@ -3,27 +3,12 @@ const validator = require('validator');
 
 const User = require('../models/userModel')
 
-const validateAndEncrypt = async ({username, email, password}, User, validateUsername=true, validateEmail=true) => {
+const validateAndEncrypt = async ({username, password}, User, validateUsername=true) => {
     if (!User) User = require('../models/userModel')
     
     //checks if all fields filled
-    if ((validateEmail && !email) || !password || (validateUsername && !username)) {
+    if (!password || (validateUsername && !username)) {
         throw Error("All fields must be filled");
-    }
-
-    //checks for valid email format
-    if (validateEmail && !validator.isEmail(email)) {
-        throw Error ("Please Enter a Valid Email");
-    }
-    
-    //checks if the email already exists
-
-    if (validateEmail) {
-        const existsEmail = await User.findOne({ email });
-        
-        if (existsEmail) {
-            throw Error("Email already in use");
-        }
     }
     
     //checks if the username already exists
@@ -46,7 +31,7 @@ const validateAndEncrypt = async ({username, email, password}, User, validateUse
     //encrypts the password
     const hash = await bcrypt.hash(password, salt);
 
-    return { username, email, password: hash }
+    return { username, password: hash }
 }
 
 module.exports = validateAndEncrypt
