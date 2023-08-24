@@ -65,23 +65,25 @@ const updateUser = async (req, res) => {
     const { id: userID } = req.user._id;
     console.log('UPDATING USER', req.user.username)
 
-    try {
-        const { username, password } = await validateAndEncrypt({...req.body}, User, false)
-    } catch (err) {
-        return res.status(400).json({error: err.message});
-    }
-
     if (!mongoose.isValidObjectId(userID)) {
         return res.status(400).json({error: "Invalid ID"});
     }
 
-    const user = await User.findByIdAndUpdate(userID, {
-        username, password
-    }, {new: true});
+    try {
+        const { username, password } = await validateAndEncrypt({...req.body}, User, false)
+        
+        const user = await User.findByIdAndUpdate(userID, { username, password }, {new: true});
 
-    if (!mongoose.isValidObjectId(userID)) {
-        return res.status(404).json({error: "No such user exists"});
+        if (!user) {
+            return res.status(404).json({error: "No such user exists"});
+        }
+
+    } catch (err) {
+        return res.status(400).json({error: err.message});
     }
+    
+
+
 
     res.status(200).json(user);
 }
