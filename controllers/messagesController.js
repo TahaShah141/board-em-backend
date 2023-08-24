@@ -32,7 +32,7 @@ const getNewMessages = async (req, res) => {
     const { id: userID } = req.params
 
     let newMessages
-    if (!id) newMessages = await Message.find({createdAt: {$gt: new Date(lastRequest)}}).sort({createdAt: -1})
+    if (!userID) newMessages = await Message.find({createdAt: {$gt: new Date(lastRequest)}}).sort({createdAt: -1})
     else newMessages = await Message.find({sender_id: userID, createdAt: {$gt: new Date(lastRequest)}}).sort({createdAt: -1})
 
     res.status(200).json(newMessages)
