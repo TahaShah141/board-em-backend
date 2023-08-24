@@ -17,7 +17,7 @@ const validateAndEncrypt = async (username, email, password, emailPresent=true) 
     //checks if the email already exists
 
     if (emailPresent) {
-        const existsEmail = await this.findOne({ email });
+        const existsEmail = await User.findOne({ email });
         
         if (existsEmail) {
             throw Error("Email already in use");
