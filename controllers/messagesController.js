@@ -30,7 +30,7 @@ const getAllMessages = async (req, res) => {
 const getNewMessages = async (req, res) => {
     const { lastRequest } = req.body
 
-    const newMessages = await Message.find({createdAt: {$gt: lastRequest}})
+    const newMessages = await Message.find({createdAt: {$gte: new Date(lastRequest)}})
 
     // res.status(200).json({lastRequest})
     res.status(200).json(newMessages)
