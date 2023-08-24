@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
 const validator = require('validator');
 
+const User = require('../models/userModel')
+
 const validateAndEncrypt = async (username, email, password, User, emailPresent=true) => {
     if (!User) User = require('../models/userModel')
     
