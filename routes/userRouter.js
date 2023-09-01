@@ -7,7 +7,8 @@ const {
     getUser,
     deleteUser,
     updateUser,
-    getUserMessages
+    getUserMessages,
+    getOwnedBoards
 } = require("../controllers/usersController");
 
 //initializing the router
@@ -16,16 +17,16 @@ const router = express.Router();
 //edit/update a User by id
 router.patch('/change', updateUser);
 
-//get the user's messages
-router.get('/messages', getUserMessages);
+//get messages sent by a user, segmented by boards
+router.get('/messages', getUserMessages)
+
+//get boards made by user
+router.get('/boards/owned', getOwnedBoards)
 
 //get a user by id
-router.get('/:id', getUser);
-
-//get a user's messages by his id
-router.get('/:id/messages', getUserMessages);
+router.get('/:user', getUser);
 
 //delete a user by id
-router.delete('/:id', deleteUser);
+router.delete('/:user', deleteUser);
 
 module.exports = router

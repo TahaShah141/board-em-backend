@@ -1,37 +1,88 @@
-const bcrypt = require('bcrypt');
-const validator = require('validator');
-
+const mongoose = require('mongoose')
 const User = require('../models/userModel')
+const Board = require('../models/boardModel')
 
-const validateAndEncrypt = async ({username, password}, User, validateUsername=true) => {
-    if (!User) User = require('../models/userModel')
-    
-    //checks if all fields filled
-    if (!password || (validateUsername && !username)) {
-        throw Error("All fields must be filled");
-    }
-    
-    //checks if the username already exists
-    if (validateUsername) {
-        const existsUsername = await User.findOne({ username });
-        
-        if (existsUsername) {
-            throw Error("Username already in use");
-        }
-    }
-    
-    //checks if raw password strong enough
-    if (!validator.isStrongPassword(password)){
-        throw Error ("Password not strong enough");
-    }
 
-    //add extra protection to the password so even same passwords are stored differently
-    const salt = await bcrypt.genSalt(10);
-    
-    //encrypts the password
-    const hash = await bcrypt.hash(password, salt);
-
-    return { username, password: hash }
+//if mongoose ID inside an array
+const idInside = (id, array) => { 
+    id = id.toString()
+    for (let i in array) {
+        if (array[i].toString() === id) return true 
+    }
+    return false
 }
 
-module.exports = validateAndEncrypt
+//if user owner of board
+const isUserOwner = async (userID, boardID) => {
+    const user = await getValidUser(userID)
+    if (!user) return false
+
+    const boards = user.boards
+
+    return idInside(boardID, boards)
+}
+
+//if user can view messages of board
+const canUserRead = async (userID, boardID) => {
+    const board = await getValidBoard(boardID)
+    if (!board) return false
+
+    const user = await getValidUser(userID)
+    if (!user) return false
+
+    return (board.public || board.owner_id.toString() === userID.toString() || idInside(userID, board.viewers))
+}
+
+
+//if user can post messages on board
+const canUserPost = async (userID, boardID) => {
+    const board = await getValidBoard(boardID)
+    if (!board) return false
+
+    const user = await getValidUser(userID)
+    if (!user) return false
+
+    return (board.public || board.owner_id.toString() === userID.toString() || idInside(userID, board.authors))
+}
+
+
+//validates a userid
+const getValidUser = async (id) => {
+    if (!mongoose.isValidObjectId(id)) {
+        return null
+    }
+    
+    const user = await User.findById(id)
+
+    if (!user) {
+        return null
+    }
+
+    return user
+}
+
+
+//validates a boardId
+const getValidBoard = async (id) => {
+    if (!mongoose.isValidObjectId(id)) {
+        return null
+    }
+
+    const board = await Board.findById(id)
+
+    if (!board) {
+        return null
+    }
+
+    return board
+}
+
+
+module.exports = {
+    idInside,
+    getValidUser,
+    getValidBoard,
+    isUserOwner,
+    canUserPost,
+    canUserRead
+}

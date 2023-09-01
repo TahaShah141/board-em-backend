@@ -11,6 +11,11 @@ const MessageSchema = new Schema({
         required: true,
         index: true
     },
+    board_id: {
+        type: mongoose.Types.ObjectId,
+        required: true,
+        index: true
+    },
     username: {
         type: String,
         required: true,

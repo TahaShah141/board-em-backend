@@ -3,81 +3,45 @@
 const mongoose = require('mongoose');
 const Message = require('../models/messageModel');
 
-
-//create a new message and insert into db
-const newMessage = async (req, res) => {
-
-    const sender_id = req.user._id;
-    const username = req.user.username
-    const { title, content } = req.body;
-
-    try {
-        const message = await Message.create({sender_id, username, title, content});
-        res.status(200).json(message);
-    }
-    catch (err) {
-        res.status(400).json({error: "Failed to create a new Message. Please Fill all fields correctly"})
-    }
-}
-
-//get all messages
-const getAllMessages = async (req, res) => {
-    const allMessages = await Message.find({}).sort({createdAt: -1});
-    
-    res.status(200).json(allMessages);
-}
+const { 
+    getValidBoard,
+    canUserPost,
+    canUserRead
+} = require('../middleware/validate')
 
 const getNewMessages = async (req, res) => {
     const { lastRequest } = req.query
-    const { id: userID } = req.params
+    const { board } = req.params
 
-    let newMessages
-    if (!userID) newMessages = await Message.find({createdAt: {$gt: new Date(lastRequest)}}).sort({createdAt: -1})
-    else newMessages = await Message.find({sender_id: userID, createdAt: {$gt: new Date(lastRequest)}}).sort({createdAt: -1})
+    let filter = {createdAt: {$gt: new Date(lastRequest)}, board_id: new mongoose.Types.ObjectId(board)}
+
+    const newMessages = await Message.find(filter).sort({createdAt: -1})
 
     res.status(200).json(newMessages)
 }
 
 
-//get a message by id
-const getMessage = async (req, res) => {
-    const { id: messageID } = req.params;
-
-    if (!mongoose.isValidObjectId(messageID)) {
-        return res.status(400).json({error: "Invalid ID"});
-    }
-
-    const message = await Message.findById(messageID);
-
-    if (!mongoose.isValidObjectId(messageID)) {
-        return res.status(404).json({error: "No such message exists"});
-    }
-
-    res.status(200).json(message);
-}
-
-
 //delete a message by id
 const deleteMessage = async (req, res) => {
-    const { id: messageID } = req.params;
+    const { message } = req.params;
 
-    if (!mongoose.isValidObjectId(messageID)) {
+    if (!mongoose.isValidObjectId(message)) {
         return res.status(400).json({error: "Invalid ID"});
     }
 
-    const message = await Message.findByIdAndDelete(messageID);
+    const m = await Message.findByIdAndDelete(message);
 
-    if (!mongoose.isValidObjectId(messageID)) {
+    if (!mongoose.isValidObjectId(message)) {
         return res.status(404).json({error: "No such message exists"});
     }
 
-    res.status(200).json(message);
+    res.status(200).json(m);
 }
 
 
-//update a message by id
-const updateMessage = async (req, res) => {
-    const { id: messageID } = req.params;
+//edit a message by id
+const editMessage = async (req, res) => {
+    const { message: messageID } = req.params;
 
     if (!mongoose.isValidObjectId(messageID)) {
         return res.status(400).json({error: "Invalid ID"});
@@ -94,12 +58,49 @@ const updateMessage = async (req, res) => {
     res.status(200).json(message);
 }
 
+const getBoardMessages = async (req, res) => {
+    const { board } = req.params
+    const user = req.user._id
+
+    
+    b = await getValidBoard(board)
+    if (!b) return res.status(400).json({error: "No Such Board Exists"})
+    
+    
+    if (!(await canUserRead(user, board)))
+        return res.status(401).json({error: "Unauthorized access detected"})
+    
+    const messages = await Message.find({board_id: b._id}).sort({createdAt: -1})
+    
+    res.status(200).json(messages)
+}
+
+const postNewMessage = async (req, res) => {
+    const { board } = req.params
+    const { title, content } = req.body
+    const sender_id = req.user._id
+    const username = req.user.username
+
+    b = await getValidBoard(board)
+    if (!b) res.status(400).json({error: "No Such Board Exists"})
+
+    if (!(await canUserPost(sender_id, board)))
+        return res.status(401).json({error: "Unauthorized access detected"})
+    
+    try {
+        const message = await Message.create({sender_id, board_id: b._id, username, title, content});
+        return res.status(200).json(message);
+    }
+    catch (err) {
+        return res.status(400).json({error: "Failed to create a new Message. Please Fill all fields correctly"})
+    }    
+}
+
 
 module.exports = {
-    getAllMessages,
     getNewMessages,
-    getMessage,
-    newMessage,
     deleteMessage, 
-    updateMessage
+    editMessage,
+    postNewMessage,
+    getBoardMessages
 }

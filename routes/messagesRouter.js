@@ -4,36 +4,29 @@ const express = require("express");
 
 //controller functions for messages api
 const {
-    getAllMessages,
     getNewMessages,
-    getMessage,
-    newMessage,
     deleteMessage, 
-    updateMessage
+    editMessage,
+    getBoardMessages,
+    postNewMessage
 } = require("../controllers/messagesController");
 
 //initializing the router
 const router = express.Router();
 
-//get all messages
-router.get('/', getAllMessages);
-
-//get new messages
-router.get('/new', getNewMessages);
-
-//get new messages by a user
-router.get('/:id/new', getNewMessages);
-
-//post a new message
-router.post('/new', newMessage);
-
-//get a message by id
-router.get('/message/:id', getMessage);
-
 //delete a message by id
-router.delete('/message/:id', deleteMessage);
+router.delete('/message/:message', deleteMessage);
 
 //edit/update a message by id
-router.patch('/message/:id', updateMessage);
+router.patch('/message/:message', editMessage);
+
+//get all messages
+router.get('/:board', getBoardMessages);
+
+//get all messages
+router.post('/:board', postNewMessage);
+
+//get new messages
+router.get('/:board/new', getNewMessages);
 
 module.exports = router
